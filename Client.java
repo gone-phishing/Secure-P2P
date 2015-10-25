@@ -1,8 +1,12 @@
 import java.net.*;
 import java.io.*;
+import java.util.*;
 
 public class Client
 {
+   private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+   private static List<String> fileNames = new ArrayList<String>;
+
    public static void main(String [] args)
    {
       if(args.length != 2)
@@ -12,6 +16,12 @@ public class Client
       }
       String serverName = args[0];
       int port = Integer.parseInt(args[1]);
+
+      System.out.print("Shared directory path: ");
+      String sharedPath = br.readLine();
+      FileList fl = new FileList(sharedPath);
+      fileNames = fl.filesRec;
+
       try 
       (
          Socket client = new Socket(serverName, port);
@@ -19,7 +29,6 @@ public class Client
          PrintWriter out = new PrintWriter(client.getOutputStream(), true);
       )
       {
-         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
          String mserv = "";
          String muser = "";
          while( (mserv = in.readLine()) != null)
@@ -40,7 +49,7 @@ public class Client
          {
             muser  = br.readLine();
             out.println(muser);
-            if(muser.equals("QUIT"))
+            if(muser.equals("exit"))
             {
                break;
             }

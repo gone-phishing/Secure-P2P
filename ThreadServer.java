@@ -38,13 +38,19 @@ public class ThreadServer extends Thread
                }
             }
          }
-         System.out.println( "JOIN : "+name+ " -> "+socket.getRemoteSocketAddress());
-         out.println("WELCOME "+name+" to the P2P server");
+         System.out.println( "JOIN : "+name);
+         String addr[] = socket.getRemoteSocketAddress().toString().split(":");
+         Node node = new Node(name, addr[0].substring(1, addr[0].length()), Integer.parseInt(addr[1]));
+         synchronized (HostServer.nodes)
+         {
+            HostServer.nodes.add(node);
+         }
+         out.println("WELCOME "+node.getName()+" to the P2P server");
          String mclie = "";
          while( (mclie = in.readLine()) != null)
          {
             System.out.println(name+": "+mclie);
-            if(mclie.equals("QUIT"))
+            if(mclie.equals("exit"))
             {
                break;
             }
