@@ -16,25 +16,33 @@ public class Client
       (
          Socket client = new Socket(serverName, port);
          BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-         //BufferedWriter out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
          PrintWriter out = new PrintWriter(client.getOutputStream(), true);
       )
       {
-         System.out.println("Just connected to "+client.getRemoteSocketAddress());
          BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
          String mserv = "";
          String muser = "";
          while( (mserv = in.readLine()) != null)
          {
             System.out.println("Server: "+mserv);
-            if(mserv.equals("QUIT"))
+            if(mserv.startsWith("NAME"))
             {
+               muser = br.readLine();
+               out.println(muser);
+            }
+            else if(mserv.startsWith("WELC"))
+            {
+               System.out.println("Just connected to "+client.getRemoteSocketAddress());
                break;
             }
-            muser = br.readLine();
-            if(muser != null)
+         }
+         while(true)
+         {
+            muser  = br.readLine();
+            out.println(muser);
+            if(muser.equals("QUIT"))
             {
-               out.println(muser);
+               break;
             }
          }
       }

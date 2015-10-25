@@ -4,7 +4,10 @@ import java.util.*;
 
 class HostServer
 {
-    private static int MAX_CONNECTION = 5;
+    private static int MAX_CONNECTION = 2;
+    public static Set<String> usernames = new HashSet<String>();
+    public static Set<Node> nodes = new HashSet<Node>();
+    public static int count_user = 0;
     public static void main(String[] args) throws IOException
     {
         if(args.length != 1)
@@ -14,8 +17,8 @@ class HostServer
         }
         int port = Integer.parseInt(args[0]);
         boolean listen = true;
-        int count_user = 0;
-        try (ServerSocket ss = new ServerSocket(port))
+
+        try (ServerSocket ss = new ServerSocket(port, MAX_CONNECTION))
         {
             System.out.println("Server hosted at -> "+ss.getLocalSocketAddress());
             while(listen)
@@ -23,10 +26,6 @@ class HostServer
                 new ThreadServer(ss.accept()).start();
                 ++count_user;
                 System.out.println("User Count : "+count_user);
-                if(count_user == MAX_CONNECTION)
-                {
-                    listen = false;
-                }
             }
         }
         catch(IOException ex)
