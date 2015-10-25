@@ -5,10 +5,12 @@ class Node
 	private String host;
 	private int port;
 	private String id;
-	Node(String host, int port)
+	private String name;
+	Node(String name, String host, int port)
 	{
 		this.host = host;
 		this.port = port;
+		this.name = name;
 		this.id = host+"@"+port;
 	}
 
@@ -22,6 +24,11 @@ class Node
 		return port;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+
 	public String getID()
 	{
 		return id;
@@ -32,6 +39,11 @@ class Node
 		this.host = host;
 	}
 
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	
 	public void setPort(int port)
 	{
 		this.port = port;
