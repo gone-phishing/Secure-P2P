@@ -64,7 +64,7 @@ public class Client
             {
                System.out.print("Enter Search String: ");
                muser = br.readLine();
-               out.println("srch"+muser);
+               out.println("SRCH"+muser);
             }
             else if(muser.equals("exit"))
             {

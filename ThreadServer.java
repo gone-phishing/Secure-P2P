@@ -54,6 +54,10 @@ public class ThreadServer extends Thread
             {
                System.out.println(name+": "+mclie.substring(5,mclie.length()));
             }
+            else if(mclie.startsWith("SRCH"))
+            {
+               
+            }
             if(mclie.equals("EXIT"))
             {
                break;
