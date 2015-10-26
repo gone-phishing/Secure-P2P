@@ -17,7 +17,6 @@ public class ThreadServer extends Thread
       try
       (
          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-         //BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
          PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
       )
       {
@@ -39,6 +38,7 @@ public class ThreadServer extends Thread
             }
          }
          System.out.println( "JOIN : "+name);
+
          String addr[] = socket.getRemoteSocketAddress().toString().split(":");
          Node node = new Node(name, addr[0].substring(1, addr[0].length()), Integer.parseInt(addr[1]));
          synchronized (HostServer.nodes)
@@ -46,11 +46,15 @@ public class ThreadServer extends Thread
             HostServer.nodes.add(node);
          }
          out.println("WELCOME "+node.getName()+" to the P2P server");
+
          String mclie = "";
          while( (mclie = in.readLine()) != null)
          {
-            System.out.println(name+": "+mclie);
-            if(mclie.equals("exit"))
+            if(mclie.startsWith("MESG"))
+            {
+               System.out.println(name+": "+mclie.substring(5,mclie.length()));
+            }
+            if(mclie.equals("EXIT"))
             {
                break;
             }
@@ -66,6 +70,7 @@ public class ThreadServer extends Thread
          {
             HostServer.usernames.remove(name);
             --HostServer.count_user;
+            System.out.println("QUIT : "+name+" left the server");
          }
          try
          {
@@ -75,7 +80,6 @@ public class ThreadServer extends Thread
          {
             e1.printStackTrace();
          }
-         System.out.println("QUIT : "+name+" left the server");
       }
    }
 }
