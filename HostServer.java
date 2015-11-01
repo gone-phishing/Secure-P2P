@@ -1,12 +1,13 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 
 class HostServer
 {
     public static Set<String> usernames = new HashSet<String>();
     public static List<Node> nodes = new ArrayList<Node>();
-    public static Map<String, ArrayList<String>> metadata = new HashMap<String, ArrayList<String>>();
+    public static Map<String, ArrayList<String>> metadata = new ConcurrentHashMap<String, ArrayList<String>>();
     public static int count_user = 0;
 
     public static void main(String[] args) throws IOException

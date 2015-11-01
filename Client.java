@@ -90,6 +90,17 @@ public class Client
                muser = br.readLine();
                mp_send = new MessageProtocol("SRCH", muser.length(), muser);
                out.println(mp_send.getMessageString());
+               muser = in.readLine();
+               mp_rec = new MessageProtocol(muser);
+               if(mp_rec.getMessageType().equals("LIST") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
+               {
+                  //System.out.println(mp_rec.getMessageContent());
+                  String found_users[] = mp_rec.getMessageContent().split("\\$");
+                  for(int i=0;i<found_users.length;i++)
+                  {
+                     System.out.println(found_users[i]);
+                  }
+               }
             }
             else if(muser.startsWith("exit"))
             {

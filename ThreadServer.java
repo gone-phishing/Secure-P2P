@@ -6,6 +6,7 @@ public class ThreadServer extends Thread
 {
    private Socket socket = null;
    private String name = null;
+   private Node node = null;
    private MessageProtocol mp_send;
    private MessageProtocol mp_rec;
    private ArrayList<String> fileList = new ArrayList<String>();
@@ -50,7 +51,7 @@ public class ThreadServer extends Thread
          System.out.println( "JOIN : "+name+" has joined the server");
 
          String addr[] = socket.getRemoteSocketAddress().toString().split(":");
-         Node node = new Node(name, addr[0].substring(1, addr[0].length()), Integer.parseInt(addr[1]));
+         node = new Node(name, addr[0].substring(1, addr[0].length()), Integer.parseInt(addr[1]));
          synchronized (HostServer.nodes)
          {
             HostServer.nodes.add(node);
@@ -83,7 +84,22 @@ public class ThreadServer extends Thread
             }
             else if(mp_rec.getMessageType().equals("SRCH"))
             {
-               
+               String keywords = mp_rec.getMessageContent();
+               System.out.println("Searching for "+keywords);
+               StringBuffer respbuf= new StringBuffer();
+               respbuf.append("Following users have the file:$");
+               for(String str : HostServer.metadata.keySet())
+               {
+                  if(HostServer.metadata.get(str).contains(keywords))
+                  {
+                     String nodeinfo[] = str.split("@");
+                     respbuf.append(nodeinfo[0]+" "+nodeinfo[1]+"$");
+                     System.out.println(nodeinfo[0]+" has it");
+                  }
+               }
+               String resp = respbuf.toString();
+               mp_send = new MessageProtocol("LIST",resp.length(), resp);
+               out.println(mp_send.getMessageString());
             }
             if(mp_rec.getMessageType().equals("EXIT"))
             {
@@ -100,6 +116,15 @@ public class ThreadServer extends Thread
          if(name != null)
          {
             HostServer.usernames.remove(name);
+            HostServer.nodes.remove(node);
+            for(String key : HostServer.metadata.keySet())
+            {
+               if(key.equals(node.getID()))
+               {
+                  HostServer.metadata.remove(key);
+                  break;
+               }
+            }
             --HostServer.count_user;
             System.out.println("QUIT : "+name+" left the server");
          }
