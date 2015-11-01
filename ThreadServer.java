@@ -6,6 +6,8 @@ public class ThreadServer extends Thread
 {
    private Socket socket = null;
    private String name = null;
+   private MessageProtocol mp_send;
+   private MessageProtocol mp_rec;
    public ThreadServer(Socket s)
    {
       super("Multi threaded server");
@@ -22,18 +24,24 @@ public class ThreadServer extends Thread
       {
          while(true)
          {
-            out.println("NAME");
-            name = in.readLine();
-            if(name == null)
+            mp_send = new MessageProtocol("NAME",22,"Select your username: ");
+            out.println(mp_send.getMessageString());
+            String namemesg = in.readLine();
+            mp_rec = new MessageProtocol(namemesg);
+            if(mp_rec.getMessageType().equals("NAME"))
             {
-               return;
-            }
-            synchronized (HostServer.usernames)
-            {
-               if(!HostServer.usernames.contains(name))
+               name = mp_rec.getMessageContent();
+               if(name == null)
                {
-                  HostServer.usernames.add(name);
-                  break;
+                  return;
+               }
+               synchronized (HostServer.usernames)
+               {
+                  if(!HostServer.usernames.contains(name))
+                  {
+                     HostServer.usernames.add(name);
+                     break;
+                  }
                }
             }
          }
@@ -45,20 +53,23 @@ public class ThreadServer extends Thread
          {
             HostServer.nodes.add(node);
          }
-         out.println("WELCOME "+node.getName()+" to the P2P server");
+         String welcnote = "Welcome "+node.getName()+" to the P2P server";
+         mp_send = new MessageProtocol("WELC", welcnote.length(), welcnote);
+         out.println(mp_send.getMessageString());
 
          String mclie = "";
          while( (mclie = in.readLine()) != null)
          {
-            if(mclie.startsWith("MESG"))
+            mp_rec = new MessageProtocol(mclie);
+            if(mp_rec.getMessageType().equals("MESG"))
             {
-               System.out.println(name+": "+mclie.substring(5,mclie.length()));
+               System.out.println(name+": "+mp_rec.getMessageContent());
             }
-            else if(mclie.startsWith("SRCH"))
+            else if(mp_rec.getMessageType().equals("SRCH"))
             {
                
             }
-            if(mclie.equals("EXIT"))
+            if(mp_rec.getMessageType().equals("EXIT"))
             {
                break;
             }

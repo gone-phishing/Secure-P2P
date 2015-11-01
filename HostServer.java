@@ -19,6 +19,7 @@ class HostServer
 
         try (ServerSocket ss = new ServerSocket(port))
         {
+            // TODO : Get server public ip from eth0 or wlan
             System.out.println("Server hosted at -> "+ss.getLocalSocketAddress());
             while(listen)
             {
