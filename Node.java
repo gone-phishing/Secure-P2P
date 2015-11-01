@@ -11,7 +11,7 @@ class Node
 		this.host = host;
 		this.port = port;
 		this.name = name;
-		this.id = host+"@"+port;
+		this.id = name+"@"+host;
 	}
 
 	public String getHost()
@@ -49,8 +49,8 @@ class Node
 		this.port = port;
 	}
 
-	public void setID(String host, int port)
+	public void setID(String name, String host)
 	{
-		this.id = host+"@"+port;
+		this.id = name+"@"+host;
 	}
 }

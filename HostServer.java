@@ -6,7 +6,9 @@ class HostServer
 {
     public static Set<String> usernames = new HashSet<String>();
     public static List<Node> nodes = new ArrayList<Node>();
+    public static Map<String, ArrayList<String>> metadata = new HashMap<String, ArrayList<String>>();
     public static int count_user = 0;
+
     public static void main(String[] args) throws IOException
     {
         if(args.length != 1)

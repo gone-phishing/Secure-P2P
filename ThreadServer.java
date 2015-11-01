@@ -8,6 +8,8 @@ public class ThreadServer extends Thread
    private String name = null;
    private MessageProtocol mp_send;
    private MessageProtocol mp_rec;
+   private ArrayList<String> fileList = new ArrayList<String>();
+
    public ThreadServer(Socket s)
    {
       super("Multi threaded server");
@@ -24,7 +26,7 @@ public class ThreadServer extends Thread
       {
          while(true)
          {
-            mp_send = new MessageProtocol("NAME",22,"Select your username: ");
+            mp_send = new MessageProtocol("NAME",22,"Select your username ");
             out.println(mp_send.getMessageString());
             String namemesg = in.readLine();
             mp_rec = new MessageProtocol(namemesg);
@@ -45,7 +47,7 @@ public class ThreadServer extends Thread
                }
             }
          }
-         System.out.println( "JOIN : "+name);
+         System.out.println( "JOIN : "+name+" has joined the server");
 
          String addr[] = socket.getRemoteSocketAddress().toString().split(":");
          Node node = new Node(name, addr[0].substring(1, addr[0].length()), Integer.parseInt(addr[1]));
@@ -53,9 +55,23 @@ public class ThreadServer extends Thread
          {
             HostServer.nodes.add(node);
          }
+
          String welcnote = "Welcome "+node.getName()+" to the P2P server";
          mp_send = new MessageProtocol("WELC", welcnote.length(), welcnote);
          out.println(mp_send.getMessageString());
+
+         String recvList = in.readLine();
+         mp_rec = new MessageProtocol(recvList);
+         if(mp_rec.getMessageType().equals("LIST") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
+         {
+            String str[] = mp_rec.getMessageContent().split("\\$");
+            for(int i=0;i<str.length;i++)
+            {
+               fileList.add(str[i]);
+            }
+         }
+         //System.out.println(fileList.toString());
+         HostServer.metadata.put(node.getID(), fileList);
 
          String mclie = "";
          while( (mclie = in.readLine()) != null)

@@ -43,9 +43,10 @@ public class Client
       //System.out.println("Files: "+fileNames.toString());
       for(String fname : fileNames)
       {
-         flistbuffer.append(fname+"@");
+         flistbuffer.append(fname+"$");
       }
       String sendFileList = flistbuffer.toString();
+
       String serverName = args[0];
       int port = Integer.parseInt(args[1]);
       try 
@@ -72,7 +73,8 @@ public class Client
             else if(mp_rec.getMessageType().equals("WELC"))
             {
                System.out.println(mp_rec.getMessageContent());
-               mp_send = new MessageProtocol("LIST", sendFileList.length(), sendFileList)
+               //System.out.println("File list to be sent: "+sendFileList);
+               mp_send = new MessageProtocol("LIST", sendFileList.length(), sendFileList);
                out.println(mp_send.getMessageString());
                break;
             }
