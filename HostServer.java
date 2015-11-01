@@ -7,6 +7,7 @@ class HostServer
 {
     public static Set<String> usernames = new HashSet<String>();
     public static List<Node> nodes = new ArrayList<Node>();
+    public static List<PrintWriter> broadcastList = new ArrayList<PrintWriter>();
     public static Map<String, ArrayList<String>> metadata = new ConcurrentHashMap<String, ArrayList<String>>();
     public static int count_user = 0;
 

@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class Client
+public class PeerClient
 {
    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
    private static List<String> fileNames = new ArrayList<String>();

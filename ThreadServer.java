@@ -55,6 +55,7 @@ public class ThreadServer extends Thread
          synchronized (HostServer.nodes)
          {
             HostServer.nodes.add(node);
+            HostServer.broadcastList.add(out);
          }
 
          String welcnote = "Welcome "+node.getName()+" to the P2P server";
@@ -80,7 +81,13 @@ public class ThreadServer extends Thread
             mp_rec = new MessageProtocol(mclie);
             if(mp_rec.getMessageType().equals("MESG"))
             {
-               System.out.println(name+": "+mp_rec.getMessageContent());
+               String message = name+": "+mp_rec.getMessageContent();
+               System.out.println(message);
+               // for(PrintWriter pw : HostServer.broadcastList)
+               // {
+               //    mp_send("MESG", message.length(), message);
+               //    pw.println(name+": "+mp_rec.getMessageContent());
+               // }
             }
             else if(mp_rec.getMessageType().equals("SRCH"))
             {
@@ -94,7 +101,7 @@ public class ThreadServer extends Thread
                   {
                      String nodeinfo[] = str.split("@");
                      respbuf.append(nodeinfo[0]+" "+nodeinfo[1]+"$");
-                     System.out.println(nodeinfo[0]+" has it");
+                     // System.out.println(nodeinfo[0]+" has it");
                   }
                }
                String resp = respbuf.toString();
