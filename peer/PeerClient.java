@@ -155,5 +155,9 @@ public class PeerClient
       {
          System.err.println("I/O streams not working properly for "+serverName);
       }
+      finally
+      {
+         System.exit(0);
+      }
    }
 }
