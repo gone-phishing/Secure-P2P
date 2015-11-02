@@ -11,9 +11,9 @@ public class PeerClient
 
    public static void main(String [] args)
    {
-      if(args.length != 2)
+      if(args.length != 3)
       {
-         System.out.println("Usage: java Client <server-ip> <server-port>");
+         System.out.println("Usage: java Client <host-server-ip> <host-server-port> <peerserv-port>");
          return;
       }
 
@@ -49,6 +49,9 @@ public class PeerClient
 
       String serverName = args[0];
       int port = Integer.parseInt(args[1]);
+      int peerhostport = Integer.parseInt(args[2]);
+
+      new PeerServer(peerhostport).start();
       try 
       (
          Socket client = new Socket(serverName, port);
@@ -106,6 +109,7 @@ public class PeerClient
             {
                mp_send = new MessageProtocol("EXIT", 0, "");
                out.println(mp_send.getMessageString());
+               PeerServer.ss.close();
                break;
             }
             else 

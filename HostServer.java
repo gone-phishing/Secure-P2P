@@ -27,7 +27,7 @@ class HostServer
             System.out.println("Server hosted at -> "+ss.getLocalSocketAddress());
             while(listen)
             {
-                new ThreadServer(ss.accept()).start();
+                new HostServerHandler(ss.accept()).start();
                 ++count_user;
                 System.out.println("User Count : "+count_user);
             }

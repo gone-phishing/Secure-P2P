@@ -2,7 +2,7 @@ import java.net.*;
 import java.io.*;
 import java.util.*;
 
-public class ThreadServer extends Thread
+public class HostServerHandler extends Thread
 {
    private Socket socket = null;
    private String name = null;
@@ -11,9 +11,9 @@ public class ThreadServer extends Thread
    private MessageProtocol mp_rec;
    private ArrayList<String> fileList = new ArrayList<String>();
 
-   public ThreadServer(Socket s)
+   public HostServerHandler(Socket s)
    {
-      super("Multi threaded server");
+      super("Host Server handler");
       this.socket = s;
    }
 
