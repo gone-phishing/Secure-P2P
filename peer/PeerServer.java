@@ -6,7 +6,7 @@ class PeerServer extends Thread
 {
 	private int port;
 	public static int count = 0;
-	//public static ServerSocket ss;
+	public static boolean listen = true;
 	public PeerServer(int port)
 	{
 		this.port = port;
@@ -14,7 +14,7 @@ class PeerServer extends Thread
 
 	public void run()
 	{
-		boolean listen = true;
+		//boolean listen = true;
 		try
 		(
 			ServerSocket ss = new ServerSocket(port);

@@ -1,6 +1,7 @@
 import java.net.*;
 import java.io.*;
 import java.util.*;
+import java.text.*;
 
 public class HostServerHandler extends Thread
 {
@@ -95,16 +96,36 @@ public class HostServerHandler extends Thread
                System.out.println("Searching for "+keywords);
                StringBuffer respbuf= new StringBuffer();
                respbuf.append("Following users have the file:$");
+               int num_users = 0;
                for(String str : HostServer.metadata.keySet())
                {
                   if(HostServer.metadata.get(str).contains(keywords))
                   {
                      String nodeinfo[] = str.split("@");
-                     respbuf.append(nodeinfo[0]+" "+nodeinfo[1]+"$");
-                     // System.out.println(nodeinfo[0]+" has it");
+                     if(nodeinfo[0].equals(name))
+                     {
+                        num_users = -1;
+                     }
+                     else 
+                     {
+                        ++num_users;
+                        respbuf.append(num_users+". "+nodeinfo[0]+" "+nodeinfo[1]+"$");
+                     }
                   }
                }
-               String resp = respbuf.toString();
+               String resp = null;
+               if(num_users == -1)
+               {
+                  resp = "File locally present$"; 
+               }
+               else if(num_users > 0)
+               {
+                  resp = respbuf.toString();
+               }
+               else
+               {
+                  resp = "Oops... File not found$";
+               }
                mp_send = new MessageProtocol("LIST",resp.length(), resp);
                out.println(mp_send.getMessageString());
             }
@@ -126,6 +147,14 @@ public class HostServerHandler extends Thread
                }
                String respfiles = respfilesbuf.toString();
                mp_send = new MessageProtocol("DUMP", respfiles.length(), respfiles);
+               out.println(mp_send.getMessageString());
+            }
+            else if(mp_rec.getMessageType().equals("DATE"))
+            {
+               DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+               Date date = new Date();
+               String date_str = "Server date and time: "+dateFormat.format(date);
+               mp_send = new MessageProtocol("DATE", date_str.length(), date_str);
                out.println(mp_send.getMessageString());
             }
          }

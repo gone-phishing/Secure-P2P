@@ -82,7 +82,7 @@ public class PeerClient
                break;
             }
          }
-         System.out.println("Available actions :\n1. srch : Search for a file\n2. mesg : Chat with users\n3. exit : Exit from server");
+         System.out.println("Available actions :\n1. srch : Search for a file\n2. mesg : Chat with users\n3. dump : List of all files available\n4. date : Get server date and time\n5. exit : Exit from server");
          while(true)
          {
             System.out.print(name+": ");
@@ -109,7 +109,7 @@ public class PeerClient
             {
                mp_send = new MessageProtocol("EXIT", 0, "");
                out.println(mp_send.getMessageString());
-               //PeerServer.ss.close();
+               PeerServer.listen = false;
                break;
             }
             else if(muser.startsWith("dump"))
@@ -121,10 +121,22 @@ public class PeerClient
                if(mp_rec.getMessageType().equals("DUMP") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
                {
                   String file_list_dump[] = mp_rec.getMessageContent().split("\\$");
-                  for(int i=0; i< file_list_dump.length; i++)
+                  System.out.println(file_list_dump[0]);
+                  for(int i=1; i< file_list_dump.length; i++)
                   {
-                     System.out.println(file_list_dump[i]);
+                     System.out.println(i+". "+file_list_dump[i]);
                   }
+               }
+            }
+            else if(muser.startsWith("date"))
+            {
+               mp_send = new MessageProtocol("DATE", 0, "");
+               out.println(mp_send.getMessageString());
+               muser = in.readLine();
+               mp_rec = new MessageProtocol(muser);
+               if(mp_rec.getMessageType().equals("DATE") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
+               {
+                  System.out.println(mp_rec.getMessageContent());
                }
             }
             else 
