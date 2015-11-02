@@ -109,8 +109,23 @@ public class PeerClient
             {
                mp_send = new MessageProtocol("EXIT", 0, "");
                out.println(mp_send.getMessageString());
-               PeerServer.ss.close();
+               //PeerServer.ss.close();
                break;
+            }
+            else if(muser.startsWith("dump"))
+            {
+               mp_send = new MessageProtocol("DUMP", 0, "");
+               out.println(mp_send.getMessageString());
+               muser = in.readLine();
+               mp_rec = new MessageProtocol(muser);
+               if(mp_rec.getMessageType().equals("DUMP") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
+               {
+                  String file_list_dump[] = mp_rec.getMessageContent().split("\\$");
+                  for(int i=0; i< file_list_dump.length; i++)
+                  {
+                     System.out.println(file_list_dump[i]);
+                  }
+               }
             }
             else 
             {

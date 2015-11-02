@@ -108,9 +108,25 @@ public class HostServerHandler extends Thread
                mp_send = new MessageProtocol("LIST",resp.length(), resp);
                out.println(mp_send.getMessageString());
             }
-            if(mp_rec.getMessageType().equals("EXIT"))
+            else if(mp_rec.getMessageType().equals("EXIT"))
             {
                break;
+            }
+            else if(mp_rec.getMessageType().equals("DUMP"))
+            {
+               StringBuffer respfilesbuf = new StringBuffer();
+               respfilesbuf.append("File list on server:$");
+               for(String str : HostServer.metadata.keySet())
+               {
+                  ArrayList<String> al = HostServer.metadata.get(str);
+                  for(String str2 : al)
+                  {
+                     respfilesbuf.append(str2+"$");
+                  } 
+               }
+               String respfiles = respfilesbuf.toString();
+               mp_send = new MessageProtocol("DUMP", respfiles.length(), respfiles);
+               out.println(mp_send.getMessageString());
             }
          }
       }
