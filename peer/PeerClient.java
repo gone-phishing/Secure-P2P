@@ -8,7 +8,7 @@ public class PeerClient
    private static List<String> fileNames = new ArrayList<String>();
    private static MessageProtocol mp_send;
    private static MessageProtocol mp_rec;
-
+   private static int peerhostport;
    public static void main(String [] args)
    {
       if(args.length != 3)
@@ -49,7 +49,7 @@ public class PeerClient
 
       String serverName = args[0];
       int port = Integer.parseInt(args[1]);
-      int peerhostport = Integer.parseInt(args[2]);
+      peerhostport = Integer.parseInt(args[2]);
 
       new PeerServer(peerhostport).start();
       try 
@@ -78,6 +78,9 @@ public class PeerClient
                System.out.println(mp_rec.getMessageContent());
                //System.out.println("File list to be sent: "+sendFileList);
                mp_send = new MessageProtocol("LIST", sendFileList.length(), sendFileList);
+               out.println(mp_send.getMessageString());
+               String phostport = ""+peerhostport;
+               mp_send = new MessageProtocol("PORT", phostport.length(), phostport);
                out.println(mp_send.getMessageString());
                break;
             }

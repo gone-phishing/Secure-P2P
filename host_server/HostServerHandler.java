@@ -76,6 +76,13 @@ public class HostServerHandler extends Thread
          //System.out.println(fileList.toString());
          HostServer.metadata.put(node.getID(), fileList);
 
+         String peerport = in.readLine();
+         mp_rec = new MessageProtocol(peerport);
+         if(mp_rec.getMessageType().equals("PORT"))
+         {
+            node.setPeerPort(Integer.parseInt(mp_rec.getMessageContent()));
+         }
+
          String mclie = "";
          while( (mclie = in.readLine()) != null)
          {

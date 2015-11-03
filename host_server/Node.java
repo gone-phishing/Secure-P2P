@@ -6,6 +6,7 @@ class Node
 	private int port;
 	private String id;
 	private String name;
+	private int peerport;
 	Node(String name, String host, int port)
 	{
 		this.host = host;
@@ -52,5 +53,10 @@ class Node
 	public void setID(String name, String host)
 	{
 		this.id = name+"@"+host;
+	}
+
+	public void setPeerPort(int port)
+	{
+		this.peerport = port;
 	}
 }
