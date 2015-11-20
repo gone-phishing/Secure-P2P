@@ -9,6 +9,8 @@ public class PeerClient
    private static MessageProtocol mp_send;
    private static MessageProtocol mp_rec;
    private static int peerhostport;
+   public static boolean download_status = false;
+
    public static void main(String [] args)
    {
       if(args.length != 3)
@@ -94,7 +96,7 @@ public class PeerClient
                break;
             }
          }
-         System.out.println("Available actions :\n1. srch : Search for a file\n2. mesg : Chat with users\n3. dump : List of all files available\n4. date : Get server date and time\n5. exit : Exit from server");
+         System.out.println("Available actions :\n1. srch : Search for a file\n2. mesg : Chat with users\n3. dump : List of all files available\n4. date : Get server date and time\n5. update : Update file list on server\n6. exit : Exit from server");
          while(true)
          {
             System.out.print(name+": ");
@@ -107,13 +109,41 @@ public class PeerClient
                out.println(mp_send.getMessageString());
                muser = in.readLine();
                mp_rec = new MessageProtocol(muser);
+               int num_users = 0;
+               String found_users[] = null;
                if(mp_rec.getMessageType().equals("LIST") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
                {
                   //System.out.println(mp_rec.getMessageContent());
-                  String found_users[] = mp_rec.getMessageContent().split("\\$");
+                  found_users = mp_rec.getMessageContent().split("\\$");
                   for(int i=0;i<found_users.length;i++)
                   {
-                     System.out.println(found_users[i]);
+                     System.out.println((i+1)+". "+found_users[i]);
+                     num_users++;
+                  }
+               }
+               List<String> found_user_list = new ArrayList<String>(Arrays.asList(found_users));
+               while(num_users > 0)
+               {
+                  muser = br.readLine();
+                  int sel_user = Integer.parseInt(muser);
+                  --sel_user;
+                  String selected_user[] = found_user_list.get(sel_user).split(" ");
+                  // String sel_ip = selected_user[2];
+                  // int sel_port = Integer.parseInt(selected_user[3]);
+                  new FileDownload(selected_user[0] ,selected_user[1], selected_user[2], selected_user[3]);
+                  if(download_status)
+                  {
+                     System.out.println("File download successfull :)");
+                     break;
+                  }
+                  else
+                  {
+                     found_user_list.remove(sel_user);
+                     for(int i=0;i<found_user_list.size();i++)
+                     {
+                        System.out.println((i+1)+". "+found_user_list.get(i));
+                     }
+                     --num_users;
                   }
                }
             }

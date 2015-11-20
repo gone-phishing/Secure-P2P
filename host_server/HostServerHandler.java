@@ -51,17 +51,8 @@ public class HostServerHandler extends Thread
          }
          System.out.println( "JOIN : "+name+" has joined the server");
 
-         // Add the peer node to the hostserver list
-         String addr[] = socket.getRemoteSocketAddress().toString().split(":");
-         node = new Node(name, addr[0].substring(1, addr[0].length()), Integer.parseInt(addr[1]));
-         synchronized (HostServer.nodes)
-         {
-            HostServer.nodes.add(node);
-            HostServer.broadcastList.add(out);
-         }
-
          // Send welcome message to the peer client
-         String welcnote = "Welcome "+node.getName()+" to the P2P server";
+         String welcnote = "Welcome "+name+" to the P2P server";
          mp_send = new MessageProtocol("WELC", welcnote.length(), welcnote);
          out.println(mp_send.getMessageString());
 
@@ -77,16 +68,26 @@ public class HostServerHandler extends Thread
             }
          }
 
-         // Add the list of files to hostserver's metadata collection
-         HostServer.metadata.put(node.getID(), fileList);
-
          // Set the peerport variable of the peer node
          String peerport = in.readLine();
+         int p_port = 0;
          mp_rec = new MessageProtocol(peerport);
          if(mp_rec.getMessageType().equals("PORT"))
          {
-            node.setPeerPort(Integer.parseInt(mp_rec.getMessageContent()));
+            p_port = Integer.parseInt(mp_rec.getMessageContent());
          }
+
+         // Add the peer node to the hostserver list
+         String addr[] = socket.getRemoteSocketAddress().toString().split(":");
+         node = new Node(name, addr[0].substring(1, addr[0].length()), Integer.parseInt(addr[1]), p_port);
+         synchronized (HostServer.nodes)
+         {
+            HostServer.nodes.add(node);
+            HostServer.broadcastList.add(out);
+         }
+
+         // Add the list of files to hostserver's metadata collection
+         HostServer.metadata.put(node.getID(), fileList);
 
          String mclie = "";
          while( (mclie = in.readLine()) != null)
@@ -127,7 +128,7 @@ public class HostServerHandler extends Thread
                         else 
                         {
                            ++num_users;
-                           respbuf.append(num_users+". "+nodeinfo[0]+" "+nodeinfo[1]+"$");
+                           respbuf.append(num_users+". "+nodeinfo[0]+" "+str2+" "+nodeinfo[1]+" "+nodeinfo[2]+"$");
                         }     
                      }
                   }

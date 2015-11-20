@@ -7,12 +7,13 @@ class Node
 	private String id;
 	private String name;
 	private int peerport;
-	Node(String name, String host, int port)
+	Node(String name, String host, int port, int peerport)
 	{
 		this.host = host;
 		this.port = port;
 		this.name = name;
-		this.id = name+"@"+host;
+		this.peerport = peerport;
+		this.id = name+"@"+host+"@"+peerport;
 	}
 
 	public String getHost()
@@ -39,7 +40,7 @@ class Node
 	{
 		return peerport;
 	}
-	
+
 	public void setHost(String host)
 	{
 		this.host = host;

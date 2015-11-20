@@ -28,8 +28,9 @@ class FileList
 		{
 			if(fileList[i].isFile())
 			{
-				String str[] = fileList[i].getName().split("\\.");
-				filesRec.add(str[0]);
+				String str = fileList[i].getName();
+				//filesRec.add(curpath+"/"+str);
+				filesRec.add(str);
 			}
 			else if(fileList[i].isDirectory())
 			{
