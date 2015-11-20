@@ -37,6 +37,12 @@ public class PeerClient
       {
          e1.printStackTrace();
       }
+
+      /**
+       * Get all files from the shared directory and append it 
+       * to a string buffer using $ as the delimeter. The sendFileList
+       * string contains the string to be transfered to the server.
+       */
       FileList fl = new FileList(sharedPath);
       fileNames = fl.filesRec;
       StringBuffer flistbuffer = new StringBuffer();
@@ -51,6 +57,7 @@ public class PeerClient
       int port = Integer.parseInt(args[1]);
       peerhostport = Integer.parseInt(args[2]);
 
+      // Start the peer server on the specified port
       new PeerServer(peerhostport).start();
       try 
       (
@@ -62,6 +69,8 @@ public class PeerClient
          String mserv = "";
          String muser = "";
          String name = "";
+
+         // Register username and then send file list and peer server port info.
          while( (mserv = in.readLine()) != null)
          {
             mp_rec = new MessageProtocol(mserv);

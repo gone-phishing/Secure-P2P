@@ -35,6 +35,11 @@ class Node
 		return id;
 	}
 
+	public int getPeerPort()
+	{
+		return peerport;
+	}
+	
 	public void setHost(String host)
 	{
 		this.host = host;

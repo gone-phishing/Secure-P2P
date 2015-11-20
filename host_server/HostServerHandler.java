@@ -51,6 +51,7 @@ public class HostServerHandler extends Thread
          }
          System.out.println( "JOIN : "+name+" has joined the server");
 
+         // Add the peer node to the hostserver list
          String addr[] = socket.getRemoteSocketAddress().toString().split(":");
          node = new Node(name, addr[0].substring(1, addr[0].length()), Integer.parseInt(addr[1]));
          synchronized (HostServer.nodes)
@@ -59,10 +60,12 @@ public class HostServerHandler extends Thread
             HostServer.broadcastList.add(out);
          }
 
+         // Send welcome message to the peer client
          String welcnote = "Welcome "+node.getName()+" to the P2P server";
          mp_send = new MessageProtocol("WELC", welcnote.length(), welcnote);
          out.println(mp_send.getMessageString());
 
+         // Recieve the shared file list from the peer client
          String recvList = in.readLine();
          mp_rec = new MessageProtocol(recvList);
          if(mp_rec.getMessageType().equals("LIST") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
@@ -73,9 +76,11 @@ public class HostServerHandler extends Thread
                fileList.add(str[i]);
             }
          }
-         //System.out.println(fileList.toString());
+
+         // Add the list of files to hostserver's metadata collection
          HostServer.metadata.put(node.getID(), fileList);
 
+         // Set the peerport variable of the peer node
          String peerport = in.readLine();
          mp_rec = new MessageProtocol(peerport);
          if(mp_rec.getMessageType().equals("PORT"))
@@ -104,21 +109,45 @@ public class HostServerHandler extends Thread
                StringBuffer respbuf= new StringBuffer();
                respbuf.append("Following users have the file:$");
                int num_users = 0;
-               for(String str : HostServer.metadata.keySet())
+
+               /**
+                * For substring file name search
+                */
+               for(String str1 : HostServer.metadata.keySet())
                {
-                  if(HostServer.metadata.get(str).contains(keywords))
+                  for(String str2 : HostServer.metadata.get(str1))
                   {
-                     String nodeinfo[] = str.split("@");
-                     if(nodeinfo[0].equals(name))
+                     if(str2.toLowerCase().contains(keywords.toLowerCase()))
                      {
-                        num_users = -1;
-                     }
-                     else 
-                     {
-                        ++num_users;
-                        respbuf.append(num_users+". "+nodeinfo[0]+" "+nodeinfo[1]+"$");
+                        String nodeinfo[] = str1.split("@");
+                        if(nodeinfo[0].equals(name))
+                        {
+                           num_users = -1;
+                        }
+                        else 
+                        {
+                           ++num_users;
+                           respbuf.append(num_users+". "+nodeinfo[0]+" "+nodeinfo[1]+"$");
+                        }     
                      }
                   }
+
+                  /**
+                   * For exact file name search
+                   */
+                  // if(HostServer.metadata.get(str).contains(keywords))
+                  // {
+                  //    String nodeinfo[] = str.split("@");
+                  //    if(nodeinfo[0].equals(name))
+                  //    {
+                  //       num_users = -1;
+                  //    }
+                  //    else 
+                  //    {
+                  //       ++num_users;
+                  //       respbuf.append(num_users+". "+nodeinfo[0]+" "+nodeinfo[1]+"$");
+                  //    }
+                  // }
                }
                String resp = null;
                if(num_users == -1)
