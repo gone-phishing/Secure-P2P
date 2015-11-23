@@ -24,9 +24,11 @@ class FileDownload
          	PrintWriter out = new PrintWriter(s.getOutputStream(), true);
 		)
 		{
-			mp_send = new MessageProtocol("PING", filename.length(), filename);
+			String req = PeerClient.name + "$" + filename;
+			mp_send = new MessageProtocol("PING", req.length(), req);
 			out.println(mp_send.getMessageString());
-			mp_rec = new MessageProtocol(in.readLine());
+			String muser = in.readLine();
+			mp_rec = new MessageProtocol(muser);
 			if(mp_rec.getMessageType().equals("RACK"))
 			{
 				if(mp_rec.getMessageContent().equals("Y"))

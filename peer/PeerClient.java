@@ -8,6 +8,7 @@ public class PeerClient
    private static List<String> fileNames = new ArrayList<String>();
    private static MessageProtocol mp_send;
    private static MessageProtocol mp_rec;
+   public static String name = "";
    private static int peerhostport;
    public static boolean download_status = false;
 
@@ -61,6 +62,8 @@ public class PeerClient
 
       // Start the peer server on the specified port
       new PeerServer(peerhostport).start();
+
+      // Connect to the hostserver
       try 
       (
          Socket client = new Socket(serverName, port);
@@ -70,7 +73,6 @@ public class PeerClient
       {
          String mserv = "";
          String muser = "";
-         String name = "";
 
          // Register username and then send file list and peer server port info.
          while( (mserv = in.readLine()) != null)
@@ -86,8 +88,8 @@ public class PeerClient
             }
             else if(mp_rec.getMessageType().equals("WELC"))
             {
+               // Send file list and peer port to host server
                System.out.println(mp_rec.getMessageContent());
-               //System.out.println("File list to be sent: "+sendFileList);
                mp_send = new MessageProtocol("LIST", sendFileList.length(), sendFileList);
                out.println(mp_send.getMessageString());
                String phostport = ""+peerhostport;
@@ -96,54 +98,73 @@ public class PeerClient
                break;
             }
          }
+
+         // Tell available actions to the peer nodes
          System.out.println("Available actions :\n1. srch : Search for a file\n2. mesg : Chat with users\n3. dump : List of all files available\n4. date : Get server date and time\n5. update : Update file list on server\n6. exit : Exit from server");
          while(true)
          {
             System.out.print(name+": ");
             muser = br.readLine();
+
             if(muser.startsWith("srch"))
             {
+               // Request search for a particular file
                System.out.print("Enter Search String: ");
                muser = br.readLine();
                mp_send = new MessageProtocol("SRCH", muser.length(), muser);
                out.println(mp_send.getMessageString());
+
+               // Check hostserver's response for availability of the file
                muser = in.readLine();
                mp_rec = new MessageProtocol(muser);
-               int num_users = 0;
-               String found_users[] = null;
-               if(mp_rec.getMessageType().equals("LIST") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
+               if(mp_rec.getMessageType().equals("FAIL") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
                {
-                  //System.out.println(mp_rec.getMessageContent());
-                  found_users = mp_rec.getMessageContent().split("\\$");
+                  System.out.println(mp_rec.getMessageContent());
+               }
+               else if(mp_rec.getMessageType().equals("LIST") && (mp_rec.getMessageLength() == mp_rec.getMessageContent().length()))
+               {
+                  // Get list of all users having the file
+                  String found_users[] = mp_rec.getMessageContent().split("\\$");
+                  int num_users = found_users.length;
                   for(int i=0;i<found_users.length;i++)
                   {
-                     System.out.println((i+1)+". "+found_users[i]);
-                     num_users++;
+                     System.out.println(found_users[i]);
                   }
-               }
-               List<String> found_user_list = new ArrayList<String>(Arrays.asList(found_users));
-               while(num_users > 0)
-               {
-                  muser = br.readLine();
-                  int sel_user = Integer.parseInt(muser);
-                  --sel_user;
-                  String selected_user[] = found_user_list.get(sel_user).split(" ");
-                  // String sel_ip = selected_user[2];
-                  // int sel_port = Integer.parseInt(selected_user[3]);
-                  new FileDownload(selected_user[0] ,selected_user[1], selected_user[2], selected_user[3]);
-                  if(download_status)
+
+                  // Making arraylist of all available users and removing the top helper line
+                  List<String> found_user_list = new ArrayList<String>(Arrays.asList(found_users));
+                  found_user_list.remove(0);
+
+                  // Loop till successfull download or list exhausts
+                  while(num_users > 0)
                   {
-                     System.out.println("File download successfull :)");
-                     break;
-                  }
-                  else
-                  {
-                     found_user_list.remove(sel_user);
-                     for(int i=0;i<found_user_list.size();i++)
+                     // Read peer number from the console
+                     muser = br.readLine();
+                     int sel_user = Integer.parseInt(muser);
+                     --sel_user;
+
+                     // Send username, filename, ip, port for file
+                     String selected_user[] = found_user_list.get(sel_user).split(" ");
+                     new FileDownload(selected_user[1] ,selected_user[2], selected_user[3], selected_user[4]);
+
+                     if(download_status)
                      {
-                        System.out.println((i+1)+". "+found_user_list.get(i));
+                        System.out.println("File download successfull :)");
+                        break;
                      }
-                     --num_users;
+                     else
+                     {
+                        found_user_list.remove(sel_user);
+                        for(int i=0;i<found_user_list.size();i++)
+                        {
+                           System.out.println(found_user_list.get(i));
+                        }
+                        --num_users;
+                     }
+                  }
+                  if(num_users == 0)
+                  {
+                     System.out.println("Sorry, The file cannont be downloaded currently. Please try again later with a different username :)");
                   }
                }
             }

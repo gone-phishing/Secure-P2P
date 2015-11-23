@@ -15,6 +15,7 @@ class MessageProtocol
 	 * DUMP -> Sends all file lists
 	 * PING -> Send file name to peer server
 	 * RACK -> Acknowledge peer request
+	 * FAIL -> No user list to send
 	 */
 	private String mtype = "";
 	private int mlen = 0;

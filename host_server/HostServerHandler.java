@@ -116,20 +116,27 @@ public class HostServerHandler extends Thread
                 */
                for(String str1 : HostServer.metadata.keySet())
                {
+                  boolean flag = false;
                   for(String str2 : HostServer.metadata.get(str1))
                   {
                      if(str2.toLowerCase().contains(keywords.toLowerCase()))
                      {
                         String nodeinfo[] = str1.split("@");
-                        if(nodeinfo[0].equals(name))
+                        if(nodeinfo[0].equals(name) && str2.equals(keywords))
                         {
                            num_users = -1;
+                           flag = true;
+                           break;
                         }
                         else 
                         {
                            ++num_users;
                            respbuf.append(num_users+". "+nodeinfo[0]+" "+str2+" "+nodeinfo[1]+" "+nodeinfo[2]+"$");
                         }     
+                     }
+                     if(flag)
+                     {
+                        break;
                      }
                   }
 
@@ -153,18 +160,22 @@ public class HostServerHandler extends Thread
                String resp = null;
                if(num_users == -1)
                {
-                  resp = "File locally present$"; 
+                  resp = "File locally present"; 
+                  mp_send = new MessageProtocol("FAIL",resp.length(), resp);
+                  out.println(mp_send.getMessageString());
                }
                else if(num_users > 0)
                {
                   resp = respbuf.toString();
+                  mp_send = new MessageProtocol("LIST",resp.length(), resp);
+                  out.println(mp_send.getMessageString());
                }
                else
                {
-                  resp = "Oops... File not found$";
+                  resp = "Oops... File not found";
+                  mp_send = new MessageProtocol("FAIL",resp.length(), resp);
+                  out.println(mp_send.getMessageString());
                }
-               mp_send = new MessageProtocol("LIST",resp.length(), resp);
-               out.println(mp_send.getMessageString());
             }
             else if(mp_rec.getMessageType().equals("EXIT"))
             {
