@@ -20,7 +20,9 @@ class FileDownload
 		try
 		(
 			Socket s = new Socket(ip, port);
-			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			//BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			InputStream is = s.getInputStream();
+			BufferedReader in = new BufferedReader(new InputStreamReader(is)); 
          	PrintWriter out = new PrintWriter(s.getOutputStream(), true);
 		)
 		{
@@ -31,12 +33,30 @@ class FileDownload
 			mp_rec = new MessageProtocol(muser);
 			if(mp_rec.getMessageType().equals("RACK"))
 			{
-				if(mp_rec.getMessageContent().equals("Y"))
+				String rack_op[] = mp_rec.getMessageString().split("\\$");
+				if(rack_op[0].equals("Y"))
 				{
+					FileOutputStream fos = new FileOutputStream(filename);
+					BufferedOutputStream bos = new BufferedOutputStream(fos);
+					int file_size = Integer.parseInt(rack_op[1]);
+					int bytesRead;
+					int current = 0;
+					byte [] mybytearray  = new byte [file_size];
+				    bytesRead = is.read(mybytearray,0,mybytearray.length);
+				    current = bytesRead;
+				    do 
+				    {
+				        bytesRead = is.read(mybytearray, current, (mybytearray.length-current));
+				        if(bytesRead >= 0) current += bytesRead;
+				    } 
+				    while(bytesRead > -1);
 
+				    bos.write(mybytearray, 0 , current);
+				    bos.flush();
+				    System.out.println("File " + filename + " downloaded (" + current + " bytes read)");
 					PeerClient.download_status = true;
 				}
-				else if(mp_rec.getMessageContent().equals("N"))
+				else if(rack_op[0].equals("N"))
 				{
 					System.out.println(username+" denied download request");
 				}

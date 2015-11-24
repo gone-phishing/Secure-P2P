@@ -61,7 +61,7 @@ public class PeerClient
       peerhostport = Integer.parseInt(args[2]);
 
       // Start the peer server on the specified port
-      new PeerServer(peerhostport).start();
+      new PeerServer(peerhostport, sharedPath).start();
 
       // Connect to the hostserver
       try 

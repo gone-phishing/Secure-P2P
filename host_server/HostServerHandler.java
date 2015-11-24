@@ -69,8 +69,8 @@ public class HostServerHandler extends Thread
          }
 
          // Set the peerport variable of the peer node
-         String peerport = in.readLine();
          int p_port = 0;
+         String peerport = in.readLine();
          mp_rec = new MessageProtocol(peerport);
          if(mp_rec.getMessageType().equals("PORT"))
          {
