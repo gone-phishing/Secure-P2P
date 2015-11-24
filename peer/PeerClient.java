@@ -142,6 +142,10 @@ public class PeerClient
                      // Read peer number from the console
                      muser = br.readLine();
                      int sel_user = Integer.parseInt(muser);
+                     if(sel_user >= num_users)
+                     {
+                        break;
+                     }
                      --sel_user;
 
                      // Send username, filename, ip, port for file

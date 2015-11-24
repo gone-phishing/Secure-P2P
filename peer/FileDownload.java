@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import java.math.*;
 
 class FileDownload
 {
@@ -55,7 +56,7 @@ class FileDownload
 				    do 
 				    {
 				    	// Show percentage downloaded
-				    	System.out.println("Read: "+((current*100.0)/file_size) + "%");
+				    	System.out.println("Read: "+ round(((current*100.0)/file_size), 2) + " %");
 				        bytesRead = is.read(mybytearray, current, (mybytearray.length-current));
 				        if(bytesRead >= 0) current += bytesRead;
 				    } 
@@ -81,5 +82,13 @@ class FileDownload
 		{
 			ex.printStackTrace();
 		}
+	}
+
+	public double round(double value, int places) 
+	{
+    	if (places < 0) throw new IllegalArgumentException();
+	    BigDecimal bd = new BigDecimal(value);
+    	bd = bd.setScale(places, RoundingMode.HALF_UP);
+    	return bd.doubleValue();
 	}
 }
