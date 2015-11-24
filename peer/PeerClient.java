@@ -100,7 +100,7 @@ public class PeerClient
          }
 
          // Tell available actions to the peer nodes
-         System.out.println("Available actions :\n1. srch : Search for a file\n2. mesg : Chat with users\n3. dump : List of all files available\n4. date : Get server date and time\n5. update : Update file list on server\n6. exit : Exit from server");
+         System.out.println("Available actions :\n1. srch : Search for a file\n2. mesg : Chat with users\n3. dump : List of all files available\n4. date : Get server date and time\n5. exit : Exit from server");
          while(true)
          {
             System.out.print(name+": ");
@@ -134,8 +134,7 @@ public class PeerClient
 
                   // Making arraylist of all available users and removing the top helper line
                   List<String> found_user_list = new ArrayList<String>(Arrays.asList(found_users));
-                  //found_user_list.remove(0);
-                  //System.out.println(found_user_list.toString());
+
                   // Loop till successfull download or list exhausts
                   while(num_users > 0)
                   {
@@ -147,7 +146,7 @@ public class PeerClient
 
                      // Send username, filename, ip, port for file
                      String selected_user[] = found_user_list.get(sel_user).split(" ");
-                     new FileDownload(selected_user[0] ,selected_user[1], selected_user[2], selected_user[3]);
+                     new FileDownload(selected_user[0] ,selected_user[1], selected_user[2], selected_user[3], sharedPath);
 
                      if(download_status)
                      {

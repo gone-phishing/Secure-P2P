@@ -51,33 +51,24 @@ class PeerServerHandler extends Thread
 	    		else if(question_op[0].equals("0"))
 	    		{
 	    			String filepath = sharedPath+"/"+req[1];
-	    			// String du_command_parts[] = new String[3];
-	    			// du_command_parts[0] = "du";
-	    			// du_command_parts[1] = "-b";
-	    			// du_command_parts[2] = filepath;
-	    			// String du_op[] = execute_command_shell(du_command_parts);
-	    			// String du_op_res[] = du_op[1].split(" ");
-	    			// for(String str : du_op_res)
-	    			// {
-	    			// 	System.out.print(str+" -> ");
-	    			// }
 	    			File myFile = new File(filepath);
 	    			String file_size = ""+myFile.length();
 
+	    			// Send response with file size
 	    			String resp = "Y$"+file_size;
 	    			mp_send = new MessageProtocol("RACK", resp.length(), resp);
 	    			out.println(mp_send.getMessageString());
 
-
+	    			// Copy the binary data of file to the array
 			        byte [] mybytearray  = new byte [(int)myFile.length()];
 			        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(myFile));
 			        bis.read(mybytearray,0,mybytearray.length);
-			        //OutputStream os = new OutputStream(out);
-			        //os = sock.getOutputStream();
-			        System.out.println("Sending " + req[1] + "(" + mybytearray.length + " bytes)");
+
+			        // Sending file to the peer
+			        //System.out.println("Sending " + req[1] + "(" + mybytearray.length + " bytes)");
 			        os.write(mybytearray,0,mybytearray.length);
 			        os.flush();
-			        System.out.println("Done.");	
+			        //System.out.println("Done.");	
 	    		}
 	    	}
 	    }
@@ -87,6 +78,10 @@ class PeerServerHandler extends Thread
 	    }
 	}
 
+	/**
+	 * @param : command to be executed on local shell
+	 * @return : Exit status and result
+	 */
 	private String[] execute_command_shell(String command[])
 	{
 		StringBuffer op = new StringBuffer();
