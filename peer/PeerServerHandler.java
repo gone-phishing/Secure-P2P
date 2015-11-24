@@ -24,7 +24,8 @@ class PeerServerHandler extends Thread
 		try
 	    (
 	        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-	        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+	        OutputStream os = socket.getOutputStream();
+	        PrintWriter out = new PrintWriter(os, true);
 	    )
 	    {
 	    	String recv = in.readLine();
@@ -49,12 +50,34 @@ class PeerServerHandler extends Thread
 	    		}
 	    		else if(question_op[0].equals("0"))
 	    		{
-	    			String du_op[] = execute_command_shell(new String[]{"du","-b",sharedPath+req[1]});
-	    			String file_size = (du_op[1].split(" "))[0];
-	    			System.out.println(file_size);
+	    			String filepath = sharedPath+"/"+req[1];
+	    			// String du_command_parts[] = new String[3];
+	    			// du_command_parts[0] = "du";
+	    			// du_command_parts[1] = "-b";
+	    			// du_command_parts[2] = filepath;
+	    			// String du_op[] = execute_command_shell(du_command_parts);
+	    			// String du_op_res[] = du_op[1].split(" ");
+	    			// for(String str : du_op_res)
+	    			// {
+	    			// 	System.out.print(str+" -> ");
+	    			// }
+	    			File myFile = new File(filepath);
+	    			String file_size = ""+myFile.length();
+
 	    			String resp = "Y$"+file_size;
 	    			mp_send = new MessageProtocol("RACK", resp.length(), resp);
-	    			out.println(mp_send.getMessageString());	
+	    			out.println(mp_send.getMessageString());
+
+
+			        byte [] mybytearray  = new byte [(int)myFile.length()];
+			        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(myFile));
+			        bis.read(mybytearray,0,mybytearray.length);
+			        //OutputStream os = new OutputStream(out);
+			        //os = sock.getOutputStream();
+			        System.out.println("Sending " + req[1] + "(" + mybytearray.length + " bytes)");
+			        os.write(mybytearray,0,mybytearray.length);
+			        os.flush();
+			        System.out.println("Done.");	
 	    		}
 	    	}
 	    }

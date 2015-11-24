@@ -33,7 +33,7 @@ class FileDownload
 			mp_rec = new MessageProtocol(muser);
 			if(mp_rec.getMessageType().equals("RACK"))
 			{
-				String rack_op[] = mp_rec.getMessageString().split("\\$");
+				String rack_op[] = mp_rec.getMessageContent().split("\\$");
 				if(rack_op[0].equals("Y"))
 				{
 					FileOutputStream fos = new FileOutputStream(filename);
@@ -41,11 +41,12 @@ class FileDownload
 					int file_size = Integer.parseInt(rack_op[1]);
 					int bytesRead;
 					int current = 0;
-					byte [] mybytearray  = new byte [file_size];
+					byte [] mybytearray  = new byte [file_size+10];
 				    bytesRead = is.read(mybytearray,0,mybytearray.length);
 				    current = bytesRead;
 				    do 
 				    {
+				    	System.out.println("Read: "+((current*100.0)/file_size) + "%");
 				        bytesRead = is.read(mybytearray, current, (mybytearray.length-current));
 				        if(bytesRead >= 0) current += bytesRead;
 				    } 
@@ -54,6 +55,8 @@ class FileDownload
 				    bos.write(mybytearray, 0 , current);
 				    bos.flush();
 				    System.out.println("File " + filename + " downloaded (" + current + " bytes read)");
+				    fos.close();
+				    bos.close();
 					PeerClient.download_status = true;
 				}
 				else if(rack_op[0].equals("N"))

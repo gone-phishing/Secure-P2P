@@ -108,7 +108,6 @@ public class HostServerHandler extends Thread
                String keywords = mp_rec.getMessageContent();
                System.out.println("Searching for "+keywords);
                StringBuffer respbuf= new StringBuffer();
-               respbuf.append("Following users have the file:$");
                int num_users = 0;
 
                /**
@@ -131,7 +130,7 @@ public class HostServerHandler extends Thread
                         else 
                         {
                            ++num_users;
-                           respbuf.append(num_users+". "+nodeinfo[0]+" "+str2+" "+nodeinfo[1]+" "+nodeinfo[2]+"$");
+                           respbuf.append(nodeinfo[0]+" "+str2+" "+nodeinfo[1]+" "+nodeinfo[2]+"$");
                         }     
                      }
                      if(flag)

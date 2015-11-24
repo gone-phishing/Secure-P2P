@@ -125,16 +125,17 @@ public class PeerClient
                {
                   // Get list of all users having the file
                   String found_users[] = mp_rec.getMessageContent().split("\\$");
-                  int num_users = found_users.length -1;
+                  int num_users = found_users.length;
+                  System.out.println("Following users have the file:");
                   for(int i=0;i<found_users.length;i++)
                   {
-                     System.out.println(found_users[i]);
+                     System.out.println((i+1)+". "+found_users[i]);
                   }
 
                   // Making arraylist of all available users and removing the top helper line
                   List<String> found_user_list = new ArrayList<String>(Arrays.asList(found_users));
-                  found_user_list.remove(0);
-
+                  //found_user_list.remove(0);
+                  //System.out.println(found_user_list.toString());
                   // Loop till successfull download or list exhausts
                   while(num_users > 0)
                   {
@@ -146,7 +147,7 @@ public class PeerClient
 
                      // Send username, filename, ip, port for file
                      String selected_user[] = found_user_list.get(sel_user).split(" ");
-                     new FileDownload(selected_user[1] ,selected_user[2], selected_user[3], selected_user[4]);
+                     new FileDownload(selected_user[0] ,selected_user[1], selected_user[2], selected_user[3]);
 
                      if(download_status)
                      {
@@ -159,7 +160,7 @@ public class PeerClient
                         System.out.println("Next available users: ");
                         for(int i=0;i<found_user_list.size();i++)
                         {
-                           System.out.println(found_user_list.get(i));
+                           System.out.println((i+1)+". "+found_user_list.get(i));
                         }
                         --num_users;
                      }
