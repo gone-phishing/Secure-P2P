@@ -46,9 +46,5 @@ class FileDownload
 		{
 			ex.printStackTrace();
 		}
-		finally
-		{
-			System.out.println(username+" does not have free slots for download");
-		}
 	}
 }

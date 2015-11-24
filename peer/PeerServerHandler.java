@@ -31,26 +31,27 @@ class PeerServerHandler extends Thread
 	    	if(mp_rec.getMessageType().equals("PING"))
 	    	{
 	    		String req[] = mp_rec.getMessageContent().split("\\$");
-	    		//System.out.println("Do you want to share "+req[1]+" with "+req[0]+" ? [Y/N]");
 	    		String question_text = "Do you want to share "+req[1]+" with "+req[0]+" ?";
-	    		String question_op[] = execute_command_shell("zenity --question --title \"Share File with Peer\" --text "+question_text);
-	    		System.out.println(question_op[0] + " : "+question_op[1]);
-	    		// String resp = "N";
-	    		// if(resp.equals("N") || resp.equals("n"))
-	    		// {
-	    		// 	String addr[] = socket.getRemoteSocketAddress().toString().split(":");
-	    		// 	for(String s : addr)
-	    		// 	{
-	    		// 		System.out.print(s+" -> ");
-	    		// 	}
-	    		// 	mp_send = new MessageProtocol("RACK", resp.length(), resp);
-	    		// 	out.println(mp_send.getMessageString());
-	    		// }
-	    		// else if(resp.equals("Y") || resp.equals("y"))
-	    		// {
-	    		// 	mp_send = new MessageProtocol("RACK", resp.length(), resp);
-	    		// 	out.println(mp_send.getMessageString());	
-	    		// }
+	    		String command_parts[] = new String[6];
+	    		command_parts[0] = "zenity";
+	    		command_parts[1] = "--question";
+	    		command_parts[2] = "--title";
+	    		command_parts[3] = "Share file with peer";
+	    		command_parts[4] = "--text";
+	    		command_parts[5] = question_text;
+	    		String question_op[] = execute_command_shell(command_parts);
+	    		if(question_op[0].equals("1"))
+	    		{
+	    			String resp = "N";
+	    			mp_send = new MessageProtocol("RACK", resp.length(), resp);
+	    			out.println(mp_send.getMessageString());
+	    		}
+	    		else if(question_op[0].equals("0"))
+	    		{
+	    			String resp = "Y";
+	    			mp_send = new MessageProtocol("RACK", resp.length(), resp);
+	    			out.println(mp_send.getMessageString());	
+	    		}
 	    	}
 	    }
 	    catch(IOException ex1)
@@ -59,7 +60,7 @@ class PeerServerHandler extends Thread
 	    }
 	}
 
-	private String[] execute_command_shell(String command)
+	private String[] execute_command_shell(String command[])
 	{
 		StringBuffer op = new StringBuffer();
 		String out[] = new String[2];

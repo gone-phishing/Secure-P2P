@@ -12,6 +12,10 @@ class MessageProtocol
 	 * SRCH -> Search for a file on the server
 	 * DATE -> Get server date
 	 * LIST -> Send file list to server
+	 * DUMP -> Sends all file lists
+	 * PING -> Send file name to peer server
+	 * RACK -> Acknowledge peer request
+	 * FAIL -> No user list to send
 	 */
 	private String mtype = "";
 	private int mlen = 0;

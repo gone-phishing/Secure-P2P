@@ -125,7 +125,7 @@ public class PeerClient
                {
                   // Get list of all users having the file
                   String found_users[] = mp_rec.getMessageContent().split("\\$");
-                  int num_users = found_users.length;
+                  int num_users = found_users.length -1;
                   for(int i=0;i<found_users.length;i++)
                   {
                      System.out.println(found_users[i]);
@@ -138,6 +138,7 @@ public class PeerClient
                   // Loop till successfull download or list exhausts
                   while(num_users > 0)
                   {
+                     System.out.print("Select peer number : ");
                      // Read peer number from the console
                      muser = br.readLine();
                      int sel_user = Integer.parseInt(muser);
@@ -155,6 +156,7 @@ public class PeerClient
                      else
                      {
                         found_user_list.remove(sel_user);
+                        System.out.println("Next available users: ");
                         for(int i=0;i<found_user_list.size();i++)
                         {
                            System.out.println(found_user_list.get(i));
