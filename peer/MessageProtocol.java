@@ -16,6 +16,7 @@ class MessageProtocol
 	 * PING -> Send file name to peer server
 	 * RACK -> Acknowledge peer request
 	 * FAIL -> No user list to send
+	 * XXPM -> Personal message to a peer
 	 */
 	private String mtype = "";
 	private int mlen = 0;

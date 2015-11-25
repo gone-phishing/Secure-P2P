@@ -58,7 +58,7 @@ class Node
 
 	public void setID(String name, String host)
 	{
-		this.id = name+"@"+host;
+		this.id = name+"@"+host+"@"+peerport;
 	}
 
 	public void setPeerPort(int port)

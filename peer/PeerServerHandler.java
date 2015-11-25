@@ -28,6 +28,7 @@ class PeerServerHandler extends Thread
 	        PrintWriter out = new PrintWriter(os, true);
 	    )
 	    {
+	    	//System.out.println("Peer handler");
 	    	String recv = in.readLine();
 	    	mp_rec = new MessageProtocol(recv);
 	    	if(mp_rec.getMessageType().equals("PING"))
@@ -70,6 +71,11 @@ class PeerServerHandler extends Thread
 			        os.flush();
 			        //System.out.println("Done.");	
 	    		}
+	    	}
+	    	else if(mp_rec.getMessageType().equals("XXPM"))
+	    	{
+	    		System.out.println("Private message received");
+	    		System.out.println(mp_rec.getMessageContent());
 	    	}
 	    }
 	    catch(IOException ex1)

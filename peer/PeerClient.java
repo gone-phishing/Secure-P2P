@@ -208,6 +208,21 @@ public class PeerClient
                   System.out.println(mp_rec.getMessageContent());
                }
             }
+            else if(muser.startsWith("mesg"))
+            {
+               String pm_in[] = muser.split(" ");
+               mp_send = new MessageProtocol("XXPM", pm_in[1].length(), pm_in[1]);
+               out.println(mp_send.getMessageString());
+               muser = in.readLine();
+               
+               String pm_detail[] = muser.split("@");
+               
+               String pm_ip = pm_detail[3];
+               int pm_port = Integer.parseInt(pm_detail[4]);
+               System.out.print("Enter message for "+pm_in[1]+": ");
+               String p_mesg = br.readLine();
+               new PrivateMessage(pm_ip, pm_port, p_mesg, name);
+            }
             else 
             {
                mp_send = new MessageProtocol("MESG", muser.length(), muser);

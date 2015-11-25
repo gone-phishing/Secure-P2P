@@ -204,6 +204,20 @@ public class HostServerHandler extends Thread
                mp_send = new MessageProtocol("DATE", date_str.length(), date_str);
                out.println(mp_send.getMessageString());
             }
+            else if(mp_rec.getMessageType().equals("XXPM"))
+            {
+               String pm_name = mp_rec.getMessageContent();
+               for(Node node : HostServer.nodes)
+               {
+                  if(node.getName().equals(pm_name))
+                  {
+                     String peerinfo = node.getID();
+                     mp_send = new MessageProtocol("XXPM", peerinfo.length(), peerinfo);
+                     out.println(mp_send.getMessageString());
+                     break;
+                  }
+               }
+            }
          }
       }
       catch(IOException e)
